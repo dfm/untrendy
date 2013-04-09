@@ -21,7 +21,7 @@ Usage
 
 **Square** is really complicated. It has *one* function and about *200 lines
 of code (including documentation)*. It mostly runs on love and magic (more
-complete details `are available <http://dan.iel.fm/square>`_ if you want).
+complete details are given below if you want).
 
 Let's say that you have a light curve with time samples ``t``, flux
 measurements ``f`` and uncertainties ``sigma``. You can simply run:
@@ -34,8 +34,8 @@ measurements ``f`` and uncertainties ``sigma``. You can simply run:
 to find a robust estimate of the global trends of the time series and remove
 it. The default settings are tuned to work well for finding the
 "out-of-transit" trends in Kepler data but a detailed description of the
-options is given in `the documentation <http://dan.iel.fm/square>`_. You can
-also just fit for the trends and get a callable representation of the trend:
+options is listed below. You can also just fit for the trends and get a
+callable representation of the trend:
 
 ::
 
