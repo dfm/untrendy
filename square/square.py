@@ -8,7 +8,7 @@ Various tools and constants for working with Kepler data.
 from __future__ import (division, print_function, absolute_import,
                         unicode_literals)
 
-__all__ = ["detrend"]
+__all__ = ["trend"]
 
 import numpy as np
 
@@ -21,8 +21,8 @@ except ImportError:
 from . import _square
 
 
-def detrend(x, y, yerr=None, Q=4, dt=4., tol=1.25e-3, maxiter=15,
-            fill_times=True, maxditer=4, nfill=4):
+def trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
+          fill_times=None, maxditer=4, nfill=4):
     """
     Use iteratively re-weighted least squares to fit a spline to the base
     trend in a time series. This is especially useful (and specifically
@@ -49,6 +49,11 @@ def detrend(x, y, yerr=None, Q=4, dt=4., tol=1.25e-3, maxiter=15,
     :param maxiter: (optional)
         The maximum number of re-weighting iterations to run.
 
+    :param fill_times: (optional)
+        If provided, this number sets the minimum time spacing between
+        adjacent samples that is acceptable. If the spacing is larger,
+        knots will be added to fill in the gap.
+
     :param maxditer: (optional)
         The maximum number of discontinuity search iterations to run.
 
@@ -74,8 +79,8 @@ def detrend(x, y, yerr=None, Q=4, dt=4., tol=1.25e-3, maxiter=15,
     t = np.linspace(x[0], x[-1], N)[1:-1]
 
     # Refine knot locations around break points.
-    if fill_times:
-        inds = x[1:] - x[:-1] > 10 ** (-1.25)
+    if fill_times is not None:
+        inds = x[1:] - x[:-1] > fill_times
         for i in np.arange(len(x))[inds]:
             t = _add_knots(t, x[i], x[i + 1], N=nfill)
 

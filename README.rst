@@ -1,7 +1,7 @@
 ￭ Square²
 =========
 
-**That's a seriously untrendy verb™**
+**That's a seriously untrendy verb™** 👓
 
     "De-trending Kepler light curves in style."
 
@@ -29,12 +29,12 @@ measurements ``f`` and uncertainties ``sigma``. You can simply run:
 ::
 
     import square
-    spline = square.detrend(t, f, sigma)
+    trend = square.trend(t, f, sigma)
 
 to find a robust estimate of the global trends of the time series. The default
 settings are tuned to work well for finding the "out-of-transit" trends in
 Kepler data but a detailed description of the options is given in `the
-documentation <http://dan.iel.fm/square>`_. As the name suggests, ``spline``
+documentation <http://dan.iel.fm/square>`_. As the name suggests, ``trend``
 is a callable cubic spline representation of the trends.To de-trend your data,
 just do something like:
 
