@@ -1,5 +1,5 @@
-￭ Square ￭
-==========
+￭ Square
+========
 
 So Untrendy™
 ------------
