@@ -15,4 +15,3 @@ dist
 COMMIT
 *.egg-info
 *.svg
-bin

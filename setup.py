@@ -39,9 +39,10 @@ setup(
     version=version,
     author="Dan Foreman-Mackey",
     author_email="danfm@nyu.edu",
-    description="De-trending Kepler light curves in style.",
+    description="￭ De-trending Kepler light curves in style ￭",
     long_description=open("README.rst").read(),
     packages=["square"],
+    scripts=["bin/square"],
     package_data={"": ["README.rst", "LICENSE.rst"]},
     ext_modules=[square],
     classifiers=[

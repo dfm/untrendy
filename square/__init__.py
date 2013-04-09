@@ -5,4 +5,4 @@ from __future__ import absolute_import, unicode_literals
 
 __version__ = "0.0.1"
 
-from .square import trend
+from .square import fit_trend, detrend

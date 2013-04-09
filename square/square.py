@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-Various tools and constants for working with Kepler data.
+Tools for fitting and removing trends from light curves using the ￭ algorithm.
+The default settings are tuned to work well for Kepler light curves but the
+same algorithm might be useful for other datasets.
 
 """
 
 from __future__ import (division, print_function, absolute_import,
                         unicode_literals)
 
-__all__ = ["trend"]
+__all__ = ["detrend", "fit_trend"]
 
+import logging
 import numpy as np
 
 try:
@@ -21,12 +24,40 @@ except ImportError:
 from . import _square
 
 
-def trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
-          fill_times=None, maxditer=4, nfill=4):
+def detrend(x, y, yerr=None, **kwargs):
     """
-    Use iteratively re-weighted least squares to fit a spline to the base
-    trend in a time series. This is especially useful (and specifically
-    tuned) for de-trending Kepler light curves.
+    Use iteratively re-weighted least squares to remove the out-of-transit
+    trends in a light curve.
+
+    :param x:
+        The sampled times.
+
+    :param y:
+        The fluxes corresponding to the times in ``x``.
+
+    :param yerr: (optional)
+        The 1-sigma error bars on ``y``.
+
+    :param **kwargs: (optional)
+        Other arguments passed to the ``fit_trend`` function.
+
+    :returns flux:
+        The de-trended relative fluxes.
+
+    :returns ferr:
+        The de-trended uncertainties on ``flux``.
+
+    """
+    trend = fit_trend(x, y, yerr=yerr, **kwargs)
+    factor = trend(x)
+    return y / factor, yerr / factor
+
+
+def fit_trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
+              fill_times=None, maxditer=4, nfill=4):
+    """
+    Use iteratively re-weighted least squares to fit a spline to the
+    out-of-transit trends in a time series.
 
     :param x:
         The sampled times.
@@ -81,6 +112,7 @@ def trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
     # Refine knot locations around break points.
     if fill_times is not None:
         inds = x[1:] - x[:-1] > fill_times
+        logging.info("Filling in {0} time gaps.".format(np.sum(inds)))
         for i in np.arange(len(x))[inds]:
             t = _add_knots(t, x[i], x[i + 1], N=nfill)
 
@@ -102,6 +134,8 @@ def trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
             # Check for convergence.
             sigma = np.median(chi2)
             if s0 is not None and np.abs(s0 - sigma) < tol:
+                logging.info("Converged after {0} re-weighting iterations."
+                             .format(i))
                 break
             s0 = sigma
 
@@ -113,6 +147,7 @@ def trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
         if i < 0:
             return p
 
+        logging.info("Discontinuity found at t={0}".format(x[i]))
         t = _add_knots(t, x[i], x[i + 1], N=np.max([nfill, 4]))
 
     return p
