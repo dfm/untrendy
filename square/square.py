@@ -62,6 +62,8 @@ def detrend(x, y, yerr=None, Q=4, dt=4., tol=1.25e-3, maxiter=15,
     if yerr is None:
         yerr = np.ones_like(y)
 
+    x, y, yerr = np.atleast_1d(x), np.atleast_1d(y), np.atleast_1d(yerr)
+
     inds = np.argsort(x)
     x, y, yerr = x[inds], y[inds], yerr[inds]
     ivar = 1. / yerr / yerr
