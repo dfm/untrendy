@@ -82,29 +82,23 @@ UNIX-like. Personally, I would just use Python.
 API
 ---
 
-*square*.**detrend**``(x, y, yerr=None, **kwargs)``
+*square.*\ **detrend**\ (``x``, ``y``, ``yerr=None``, ``**kwargs``)
 
-Use iteratively re-weighted least squares to remove the out-of-transit
-trends in a light curve. Unlike ``fit_trend``, this function masks bad
-data (``NaN``) and normalizes the data before fitting.
+    Use iteratively re-weighted least squares to remove the out-of-transit
+    trends in a light curve. Unlike ``fit_trend``, this function masks bad
+    data (``NaN``) and normalizes the data before fitting.
 
-:param x:
-    The sampled times.
+**Parameters**
 
-:param y:
-    The fluxes corresponding to the times in ``x``.
+:``x``: The sampled times.
+:``y``: The fluxes corresponding to the times in ``x``.
+:``yerr``: (optional) The 1-sigma error bars on ``y``.
+:``**kwargs``: (optional) Other arguments passed to the ``fit_trend`` function.
 
-:param yerr: (optional)
-    The 1-sigma error bars on ``y``.
+**Returns**
 
-:param **kwargs: (optional)
-    Other arguments passed to the ``fit_trend`` function.
-
-:returns flux:
-    The de-trended relative fluxes.
-
-:returns ferr:
-    The de-trended uncertainties on ``flux``.
+:``flux``: The de-trended relative fluxes.
+:``ferr``: The de-trended uncertainties on ``flux``.
 
 License
 -------
