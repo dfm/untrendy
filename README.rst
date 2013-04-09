@@ -34,7 +34,22 @@ measurements ``f`` and uncertainties ``sigma``. You can simply run:
 to find a robust estimate of the global trends of the time series. The default
 settings are tuned to work well for finding the "out-of-transit" trends in
 Kepler data but a detailed description of the options is given in `the
-documentation <http://dan.iel.fm/square>`_.
+documentation <http://dan.iel.fm/square>`_. As the name suggests, ``spline``
+is a callable cubic spline representation of the trends.To de-trend your data,
+just do something like:
+
+::
+
+    factor = spline(t)
+    f /= factor
+    sigma /= factor
+
+Notes
+-----
+
+1. The spline sometimes goes to hell in regions where you don't have any
+   samples so be careful with that.
+2. This whole procedure introduces correlated errors. You've been warned.
 
 License
 -------
