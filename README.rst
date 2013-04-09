@@ -82,6 +82,36 @@ UNIX-like. Personally, I would just use Python.
 API
 ---
 
+*square.*\ **fit_trend**\ (``x``, ``y``, ``yerr=None``, ``Q=12``, ``dt=4.``,
+    ``tol=1.25e-3``, ``maxiter=15``, ``fill_times=None``, ``maxditer=4``,
+    ``nfill=4``):
+
+    Use iteratively re-weighted least squares to fit a spline to the
+    out-of-transit trends in a time series. The input data should be "clean".
+    In other words, bad data should be masked and it often helps to normalize
+    the fluxes (by the median or something).
+
+**Parameters**
+
+:``x``: The sampled times.
+:``y``: The fluxes corresponding to the times in ``x``.
+:``yerr``: (optional) The 1-sigma error bars on ``y``.
+:``Q``: (optional) The parameter controlling the severity of the re-weighting.
+:``dt``: (optional) The initial spacing between time control points.
+:``tol``: (optional) The convergence criterion.
+:``maxiter``: (optional) The maximum number of re-weighting iterations to run.
+:``fill_times``: (optional) If provided, this number sets the minimum time
+                 spacing between adjacent samples that is acceptable. If the
+                 spacing is larger, knots will be added to fill in the gap.
+:``maxditer``: (optional) The maximum number of discontinuity search
+               iterations to run.
+:``nfill``: (optional) The number of knots to use to fill in the gaps.
+
+**Returns**
+
+:``trend``: A callable representation of the trends.
+
+
 *square.*\ **detrend**\ (``x``, ``y``, ``yerr=None``, ``**kwargs``)
 
     Use iteratively re-weighted least squares to remove the out-of-transit
