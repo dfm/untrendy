@@ -21,7 +21,7 @@ Usage
 
 **Square** is really complicated. It has *one* function and about *200 lines
 of code (including documentation)*. It mostly runs on love and magic (more
-complete details `are available <http://dan.iel.fm/square`_ if you want).
+complete details `are available <http://dan.iel.fm/square>`_ if you want).
 
 Let's say that you have a light curve with time samples ``t``, flux
 measurements ``f`` and uncertainties ``sigma``. You can simply run:
