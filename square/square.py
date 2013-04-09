@@ -27,7 +27,8 @@ from . import _square
 def detrend(x, y, yerr=None, **kwargs):
     """
     Use iteratively re-weighted least squares to remove the out-of-transit
-    trends in a light curve.
+    trends in a light curve. Unlike ``fit_trend``, this function masks bad
+    data (``NaN``) and normalizes the data before fitting.
 
     :param x:
         The sampled times.
@@ -48,7 +49,24 @@ def detrend(x, y, yerr=None, **kwargs):
         The de-trended uncertainties on ``flux``.
 
     """
+    if yerr is None:
+        yerr = np.ones_like(y)
+
+    x, y, yerr = np.atleast_1d(x), np.atleast_1d(y), np.atleast_1d(yerr)
+
+    # Mask bad data.
+    inds = ~(np.isnan(x) * np.isnan(y) * np.isnan(yerr))
+    x, y, yerr = x[inds], y[inds], yerr[inds]
+
+    # Normalize the data.
+    factor = np.median(y)
+    y /= factor
+    yerr /= factor
+
+    # Fit the trend.
     trend = fit_trend(x, y, yerr=yerr, **kwargs)
+
+    # De-trend the fluxes.
     factor = trend(x)
     return y / factor, yerr / factor
 
@@ -57,7 +75,9 @@ def fit_trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
               fill_times=None, maxditer=4, nfill=4):
     """
     Use iteratively re-weighted least squares to fit a spline to the
-    out-of-transit trends in a time series.
+    out-of-transit trends in a time series. The input data should be "clean".
+    In other words, bad data should be masked and it often helps to normalize
+    the fluxes (by the median or something).
 
     :param x:
         The sampled times.
@@ -100,6 +120,7 @@ def fit_trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
 
     x, y, yerr = np.atleast_1d(x), np.atleast_1d(y), np.atleast_1d(yerr)
 
+    # The time series needs to be in order.
     inds = np.argsort(x)
     x, y, yerr = x[inds], y[inds], yerr[inds]
     ivar = 1. / yerr / yerr

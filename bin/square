@@ -1,8 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
+De-trend a Kepler light curve using the ￭ algorithm.
+
 Usage: square /path/to/lightcurve.txt
        cat /path/to/lightcurve.txt | square
+
+The input data should have 2 or 3 whitespace separated columns with time in
+the first column, flux in the second and uncertainties in the third. If you
+need more control, use the Python bindings.
 
 """
 
