@@ -48,6 +48,13 @@ the function:
 
     bkg = trend(t0)
 
+Notes
+-----
+
+1. The spline sometimes goes to hell in regions where you don't have any
+   samples so be careful with that.
+2. This whole procedure introduces correlated errors. You've been warned.
+
 Command Line Interface
 ----------------------
 
@@ -72,12 +79,32 @@ same program can read the data right from standard in:
 This gives you the option of doing something crazy and then piping it all
 UNIX-like. Personally, I would just use Python.
 
-Notes
------
+API
+---
 
-1. The spline sometimes goes to hell in regions where you don't have any
-   samples so be careful with that.
-2. This whole procedure introduces correlated errors. You've been warned.
+*square*.**detrend**``(x, y, yerr=None, **kwargs)``
+
+Use iteratively re-weighted least squares to remove the out-of-transit
+trends in a light curve. Unlike ``fit_trend``, this function masks bad
+data (``NaN``) and normalizes the data before fitting.
+
+:param x:
+    The sampled times.
+
+:param y:
+    The fluxes corresponding to the times in ``x``.
+
+:param yerr: (optional)
+    The 1-sigma error bars on ``y``.
+
+:param **kwargs: (optional)
+    Other arguments passed to the ``fit_trend`` function.
+
+:returns flux:
+    The de-trended relative fluxes.
+
+:returns ferr:
+    The de-trended uncertainties on ``flux``.
 
 License
 -------
