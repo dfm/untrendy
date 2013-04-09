@@ -82,6 +82,9 @@ UNIX-like. Personally, I would just use Python.
 API
 ---
 
+Fit the trend
++++++++++++++
+
 *square.*\ **fit_trend**\ (``x``, ``y``, ``yerr=None``, ``Q=12``, ``dt=4.``,
 ``tol=1.25e-3``, ``maxiter=15``, ``fill_times=None``, ``maxditer=4``,
 ``nfill=4``):
@@ -111,6 +114,9 @@ API
 
 :``trend``: A callable representation of the trends.
 
+
+Remove the trend
+++++++++++++++++
 
 *square.*\ **detrend**\ (``x``, ``y``, ``yerr=None``, ``**kwargs``)
 
