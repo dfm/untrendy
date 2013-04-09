@@ -1,7 +1,6 @@
 ￭ Square
 ========
 
-So Untrendy™
-------------
+**So Untrendy™**
 
-De-trending Kepler light curves in style.
+*De-trending Kepler light curves in style.*
