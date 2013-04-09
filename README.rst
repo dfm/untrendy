@@ -1,7 +1,7 @@
 ￭ Square²
 =========
 
-**That's a seriously untrendy verb™** 👓
+👓 **That's a seriously untrendy verb™**
 
     "De-trending Kepler light curves in style."
 
