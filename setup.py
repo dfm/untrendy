@@ -9,7 +9,6 @@ from numpy.distutils.core import setup, Extension
 
 
 if sys.argv[-1] == "publish":
-    os.system("git rev-parse --short HEAD > COMMIT")
     os.system("python setup.py sdist upload")
     sys.exit()
 

@@ -29,20 +29,48 @@ measurements ``f`` and uncertainties ``sigma``. You can simply run:
 ::
 
     import square
-    trend = square.trend(t, f, sigma)
+    f_detrend, sigma_detrend = square.detrend(t, f, sigma)
 
-to find a robust estimate of the global trends of the time series. The default
-settings are tuned to work well for finding the "out-of-transit" trends in
-Kepler data but a detailed description of the options is given in `the
-documentation <http://dan.iel.fm/square>`_. As the name suggests, ``trend``
-is a callable cubic spline representation of the trends.To de-trend your data,
-just do something like:
+to find a robust estimate of the global trends of the time series and remove
+it. The default settings are tuned to work well for finding the
+"out-of-transit" trends in Kepler data but a detailed description of the
+options is given in `the documentation <http://dan.iel.fm/square>`_. You can
+also just fit for the trends and get a callable representation of the trend:
 
 ::
 
-    factor = spline(t)
-    f /= factor
-    sigma /= factor
+    trend = square.fit_trend(t, f, ferr)
+
+In this case, you can find the background level at some time ``t0`` by calling
+the function:
+
+::
+
+    bkg = trend(t0)
+
+Command Line Interface
+----------------------
+
+There is also the option of using **Square** from the command line if you
+don't want to bother with all the Python stuff. If you have a whitespace
+separated ASCII file containing your light curve, you can de-trend it by
+running:
+
+::
+
+    square /path/to/data.txt
+
+The code will assume that your file has 2 or 3 columns with time, flux and
+(optionally) uncertainties for each observation. Then, the de-trended light
+curve will be written to standard out in the same format. Alternatively, the
+same program can read the data right from standard in:
+
+::
+
+    cat /path/to/data.txt | square
+
+This gives you the option of doing something crazy and then piping it all
+UNIX-like. Personally, I would just use Python.
 
 Notes
 -----
