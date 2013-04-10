@@ -3,8 +3,8 @@
 """
 De-trend a Kepler light curve using the ￭ algorithm.
 
-Usage: square /path/to/lightcurve.txt
-       cat /path/to/lightcurve.txt | square
+Usage: untrend /path/to/lightcurve.txt
+       cat /path/to/lightcurve.txt | untrend
 
 The input data should have 2 or 3 whitespace separated columns with time in
 the first column, flux in the second and uncertainties in the third. If you
@@ -16,7 +16,7 @@ from __future__ import print_function, absolute_import, unicode_literals
 
 import sys
 import numpy as np
-import square
+import untrendy
 
 if __name__ == "__main__":
     if "-h" in sys.argv or "--help" in sys.argv:
@@ -48,7 +48,7 @@ if __name__ == "__main__":
         sys.exit(2)
 
     # De-trend the data.
-    f, ferr = square.detrend(t, f, ferr)
+    f, ferr = untrendy.detrend(t, f, ferr)
 
     # Output the results.
     print(title_fmt.format("time", "flux", "flux_err"))

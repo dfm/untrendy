@@ -21,7 +21,7 @@ try:
 except ImportError:
     LSQUnivariateSpline = None
 
-from . import _square
+from . import _untrendy
 
 
 def detrend(x, y, yerr=None, **kwargs):
@@ -164,7 +164,7 @@ def fit_trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
             w = ivar * Q / (chi2 + Q)
 
         # Find any discontinuities.
-        i = _square.discontinuities(x, chi, 0.5 * dt, Q, 1.0)
+        i = _untrendy.discontinuities(x, chi, 0.5 * dt, Q, 1.0)
         if i < 0:
             return p
 

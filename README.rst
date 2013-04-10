@@ -1,7 +1,14 @@
-Untrendy™
-=========
+Untrendy
+========
 
-    "De-trending Kepler light curves in style."
+    De-trending Kepler light curves in style.
+
+In an age where studying exoplanets is just the hippest thing ever, sometimes
+it's good to step out of line and be a little untrendy! This library is a set
+of hacks that can robustly remove the out-of-transit trends in light curve
+data. A description of the algorithm is available on `the website
+<http://dan.iel.fm/untrendy>`_.
+
 
 Installation
 ------------
@@ -13,6 +20,7 @@ have one of those too. Then, you can install using ``pip``:
 ::
 
     pip install untrendy
+
 
 Usage
 -----
@@ -46,12 +54,14 @@ the function:
 
     bkg = trend(t0)
 
+
 Notes
 -----
 
 1. The spline sometimes goes to hell in regions where you don't have any
    samples so be careful with that.
 2. This whole procedure introduces correlated errors. You've been warned.
+
 
 Command Line Interface
 ----------------------
@@ -76,6 +86,7 @@ same program can read the data right from standard in:
 
 This gives you the option of doing something crazy and then piping it all
 UNIX-like. Personally, I would just use Python.
+
 
 API
 ---
@@ -133,6 +144,7 @@ Remove the trend
 
 :``flux``: The de-trended relative fluxes.
 :``ferr``: The de-trended uncertainties on ``flux``.
+
 
 License
 -------
