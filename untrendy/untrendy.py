@@ -10,7 +10,7 @@ same algorithm might be useful for other datasets.
 from __future__ import (division, print_function, absolute_import,
                         unicode_literals)
 
-__all__ = ["detrend", "fit_trend"]
+__all__ = ["detrend", "fit_trend", "median"]
 
 import logging
 import numpy as np
@@ -181,3 +181,16 @@ def _add_knots(t, t1, t2, N=3):
 
     """
     return np.sort(np.append(t[(t < t1) + (t > t2)], np.linspace(t1, t2, N)))
+
+
+def median(x, y, dt=4.):
+    """
+    De-trend a light curve using a windowed median.
+
+    """
+    x, y = np.atleast_1d(x), np.atleast_1d(y)
+    r = np.empty(len(y))
+    for i, t in enumerate(x):
+        inds = (x >= t - 0.5 * dt) * (x <= t + 0.5 * dt)
+        r[i] = np.median(y[inds])
+    return r

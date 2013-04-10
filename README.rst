@@ -1,25 +1,23 @@
-￭ Square²
+Untrendy™
 =========
-
-👓 **That's a seriously untrendy verb™**
 
     "De-trending Kepler light curves in style."
 
 Installation
 ------------
 
-**Square** depends on ``numpy`` and ``scipy`` so make sure that you install
+**Untrendy** depends on ``numpy`` and ``scipy`` so make sure that you install
 those first. You'll also need a proper Fortran compiler (say ``gfortran``) so
 have one of those too. Then, you can install using ``pip``:
 
 ::
 
-    pip install square
+    pip install untrendy
 
 Usage
 -----
 
-**Square** is really complicated. It has *one* function and about *200 lines
+**Untrendy** is really complicated. It has *one* function and about *200 lines
 of code (including documentation)*. It mostly runs on love and magic (more
 complete details are given below if you want).
 
@@ -28,8 +26,8 @@ measurements ``f`` and uncertainties ``sigma``. You can simply run:
 
 ::
 
-    import square
-    f_detrend, sigma_detrend = square.detrend(t, f, sigma)
+    import untrendy
+    f_detrend, sigma_detrend = untrendy.detrend(t, f, sigma)
 
 to find a robust estimate of the global trends of the time series and remove
 it. The default settings are tuned to work well for finding the
@@ -39,7 +37,7 @@ callable representation of the trend:
 
 ::
 
-    trend = square.fit_trend(t, f, ferr)
+    trend = untrendy.fit_trend(t, f, ferr)
 
 In this case, you can find the background level at some time ``t0`` by calling
 the function:
@@ -58,14 +56,14 @@ Notes
 Command Line Interface
 ----------------------
 
-There is also the option of using **Square** from the command line if you
+There is also the option of using **Untrendy** from the command line if you
 don't want to bother with all the Python stuff. If you have a whitespace
 separated ASCII file containing your light curve, you can de-trend it by
 running:
 
 ::
 
-    square /path/to/data.txt
+    untrend /path/to/data.txt
 
 The code will assume that your file has 2 or 3 columns with time, flux and
 (optionally) uncertainties for each observation. Then, the de-trended light
@@ -74,7 +72,7 @@ same program can read the data right from standard in:
 
 ::
 
-    cat /path/to/data.txt | square
+    cat /path/to/data.txt | untrend
 
 This gives you the option of doing something crazy and then piping it all
 UNIX-like. Personally, I would just use Python.
@@ -85,7 +83,7 @@ API
 Fit the trend
 +++++++++++++
 
-*square.*\ **fit_trend**\ (``x``, ``y``, ``yerr=None``, ``Q=12``, ``dt=4.``,
+*untrendy.*\ **fit_trend**\ (``x``, ``y``, ``yerr=None``, ``Q=12``, ``dt=4.``,
 ``tol=1.25e-3``, ``maxiter=15``, ``fill_times=None``, ``maxditer=4``,
 ``nfill=4``):
 
@@ -118,7 +116,7 @@ Fit the trend
 Remove the trend
 ++++++++++++++++
 
-*square.*\ **detrend**\ (``x``, ``y``, ``yerr=None``, ``**kwargs``)
+*untrendy.*\ **detrend**\ (``x``, ``y``, ``yerr=None``, ``**kwargs``)
 
     Use iteratively re-weighted least squares to remove the out-of-transit
     trends in a light curve. Unlike ``fit_trend``, this function masks bad
@@ -142,4 +140,4 @@ License
 Copyright 2013 Dan Foreman-Mackey & contributors.
 
 Bart is free software made available under the MIT License. For details see
-`the LICENSE file <https://raw.github.com/dfm/square/master/LICENSE.rst>`_.
+`the LICENSE file <https://raw.github.com/dfm/untrendy/master/LICENSE.rst>`_.
