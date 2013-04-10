@@ -1,8 +1,6 @@
 Untrendy
 ========
 
-    De-trending Kepler light curves in style.
-
 In an age where studying exoplanets is just the hippest thing ever, sometimes
 it's good to step out of line and be a little untrendy! This library is a set
 of hacks that can robustly remove the out-of-transit trends in light curve
