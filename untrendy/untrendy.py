@@ -56,15 +56,15 @@ def detrend(x, y, yerr=None, **kwargs):
 
     # Mask bad data.
     inds = ~(np.isnan(x) + np.isnan(y) + np.isnan(yerr))
-    x0, y0, yerr0 = x[inds], y[inds], yerr[inds]
+    x0, y0 = x[inds], y[inds]
 
     # Normalize the data.
-    factor = np.median(y0)
-    y0 /= factor
-    yerr0 /= factor
+    mu = np.median(y0)
+    y[inds] /= mu
+    yerr[inds] /= mu
 
     # Fit the trend.
-    trend = fit_trend(x0, y0, yerr=yerr0, **kwargs)
+    trend = fit_trend(x0, y0, yerr=yerr[inds], **kwargs)
 
     # De-trend the fluxes.
     factor = trend(x0)
