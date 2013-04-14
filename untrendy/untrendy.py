@@ -55,7 +55,7 @@ def detrend(x, y, yerr=None, **kwargs):
     x, y, yerr = np.atleast_1d(x), np.atleast_1d(y), np.atleast_1d(yerr)
 
     # Mask bad data.
-    inds = ~(np.isnan(x) * np.isnan(y) * np.isnan(yerr))
+    inds = ~(np.isnan(x) + np.isnan(y) + np.isnan(yerr))
     x, y, yerr = x[inds], y[inds], yerr[inds]
 
     # Normalize the data.
