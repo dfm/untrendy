@@ -41,7 +41,7 @@ setup(
     description="De-trending Kepler light curves in style",
     long_description=open("README.rst").read(),
     packages=["untrendy"],
-    scripts=["bin/untren"],
+    scripts=["bin/untrend"],
     package_data={"": ["README.rst", "LICENSE.rst"]},
     ext_modules=[untrendy],
     classifiers=[

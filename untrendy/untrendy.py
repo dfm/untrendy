@@ -10,7 +10,7 @@ same algorithm might be useful for other datasets.
 from __future__ import (division, print_function, absolute_import,
                         unicode_literals)
 
-__all__ = ["detrend", "fit_trend", "median"]
+__all__ = ["detrend", "fit_trend", "discontinuity_scalar", "median"]
 
 import logging
 import numpy as np
@@ -115,6 +115,8 @@ def fit_trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
     if LSQUnivariateSpline is None:
         raise ImportError("scipy is required for spline de-trending.")
 
+    assert maxditer > 0
+
     if yerr is None:
         yerr = np.ones_like(y)
 
@@ -135,7 +137,7 @@ def fit_trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
         inds = x[1:] - x[:-1] > fill_times
         logging.info("Filling in {0} time gaps.".format(np.sum(inds)))
         for i in np.arange(len(x))[inds]:
-            t = _add_knots(t, x[i], x[i + 1], N=nfill)
+            t = _add_knots(t, x[i], x[i + 1], N=2)  # nfill)
 
     for j in range(maxditer):
         s0 = None
@@ -146,7 +148,13 @@ def fit_trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
             inds = np.argsort(x0)
             y0 = np.append(y, np.ones_like(extra_t))[inds]
             w0 = np.append(w, np.ones_like(extra_t))[inds]
-            p = LSQUnivariateSpline(x0[inds], y0, t, k=3, w=w0)
+            x0 = x0[inds]
+
+            # Check Schoenberg-Whitney condition.
+            # good = t[3 + 1:-3] - t[3:-3 - 1] > 0
+
+            # Fit the spline.
+            p = LSQUnivariateSpline(x0, y0, t, k=3, w=w0)
 
             # Compute chi_i ^2.
             chi = (y - p(x)) / yerr
@@ -164,11 +172,12 @@ def fit_trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
             w = ivar * Q / (chi2 + Q)
 
         # Find any discontinuities.
-        i = _untrendy.discontinuities(x, chi, 0.5 * dt, Q, 1.0)
+        i = _untrendy.discontinuities(x, chi, dt, Q, 0.1)
         if i < 0:
             return p
 
         logging.info("Discontinuity found at t={0}".format(x[i]))
+        print("Discontinuity found at t={0}".format(x[i]))
         t = _add_knots(t, x[i], x[i + 1], N=np.max([nfill, 4]))
 
     return p
@@ -183,12 +192,31 @@ def _add_knots(t, t1, t2, N=3):
     return np.sort(np.append(t[(t < t1) + (t > t2)], np.linspace(t1, t2, N)))
 
 
+def discontinuity_scalar(x, y, yerr=None, **kwargs):
+    kwargs["maxditer"] = kwargs.get("maxditer", 15) - 1
+    trend = fit_trend(x, y, yerr=yerr, **kwargs)
+
+    Q = kwargs.get("Q", 12)
+    dt = kwargs.get("dt", 4.)
+
+    chi = (y - trend(x)) / yerr
+    softr = np.sqrt(Q / (Q + chi * chi)) * chi
+
+    tmid = 0.5 * (x[1:] + x[:-1])
+    k = (x[:, None] - tmid[None, :]) / dt
+    k = (k - 1) ** 2 * (0 <= k) * (k <= 1) - (k + 1) ** 2 * (-1 <= k) * (k < 0)
+    val = np.sum(k * softr[:, None], axis=0) / np.sum(k * k, axis=0)
+
+    return tmid, val * val
+
+
 def median(x, y, dt=4.):
     """
     De-trend a light curve using a windowed median.
 
     """
     x, y = np.atleast_1d(x), np.atleast_1d(y)
+    assert len(x) == len(y)
     r = np.empty(len(y))
     for i, t in enumerate(x):
         inds = (x >= t - 0.5 * dt) * (x <= t + 0.5 * dt)
