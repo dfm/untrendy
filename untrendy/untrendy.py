@@ -56,19 +56,21 @@ def detrend(x, y, yerr=None, **kwargs):
 
     # Mask bad data.
     inds = ~(np.isnan(x) + np.isnan(y) + np.isnan(yerr))
-    x, y, yerr = x[inds], y[inds], yerr[inds]
+    x0, y0, yerr0 = x[inds], y[inds], yerr[inds]
 
     # Normalize the data.
-    factor = np.median(y)
-    y /= factor
-    yerr /= factor
+    factor = np.median(y0)
+    y0 /= factor
+    yerr0 /= factor
 
     # Fit the trend.
-    trend = fit_trend(x, y, yerr=yerr, **kwargs)
+    trend = fit_trend(x0, y0, yerr=yerr0, **kwargs)
 
     # De-trend the fluxes.
     factor = trend(x)
-    return y / factor, yerr / factor
+    y[inds] /= factor
+    yerr[inds] /= factor
+    return y, yerr
 
 
 def fit_trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
@@ -177,7 +179,6 @@ def fit_trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
             return p
 
         logging.info("Discontinuity found at t={0}".format(x[i]))
-        print("Discontinuity found at t={0}".format(x[i]))
         t = _add_knots(t, x[i], x[i + 1], N=np.max([nfill, 4]))
 
     return p
