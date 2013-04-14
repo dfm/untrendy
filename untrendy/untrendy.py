@@ -67,7 +67,7 @@ def detrend(x, y, yerr=None, **kwargs):
     trend = fit_trend(x0, y0, yerr=yerr0, **kwargs)
 
     # De-trend the fluxes.
-    factor = trend(x)
+    factor = trend(x0)
     y[inds] /= factor
     yerr[inds] /= factor
     return y, yerr
