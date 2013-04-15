@@ -60,14 +60,12 @@ def detrend(x, y, yerr=None, **kwargs):
 
     # Normalize the data.
     mu = np.median(y0)
-    y[inds] /= mu
-    yerr[inds] /= mu
 
     # Fit the trend.
-    trend = fit_trend(x0, y0, yerr=yerr[inds], **kwargs)
+    trend = fit_trend(x0 / mu, y0 / mu, yerr=yerr[inds], **kwargs)
 
     # De-trend the fluxes.
-    factor = trend(x0)
+    factor = mu * trend(x0)
     y[inds] /= factor
     yerr[inds] /= factor
     return y, yerr

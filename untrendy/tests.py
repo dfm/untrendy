@@ -9,6 +9,7 @@ __all__ = []
 
 import os
 import pyfits
+import numpy as np
 from .untrendy import detrend
 
 
@@ -23,5 +24,7 @@ def _load_kepler_lc(name):
 
 
 def test_SW_condition():
+    np.seterr(all="raise")
     time, flux, ferr = _load_kepler_lc("kplr010874614-2009131105131_llc.fits")
-    detrend(time, flux, ferr)
+    detrend(time, flux, ferr, dt=2, Q=4, fill_times=10 ** -1.25)
+    assert 0
