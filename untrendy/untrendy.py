@@ -124,10 +124,16 @@ def fit_trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
 
     x, y, yerr = np.atleast_1d(x), np.atleast_1d(y), np.atleast_1d(yerr)
 
+    # Mask bad data.
+    mask = ~(np.isnan(x) + np.isnan(y) + np.isnan(yerr))
+    x_masked, y_masked, yerr_masked = x[mask], y[mask], yerr[mask]
+
     # The time series needs to be in order.
     inds = np.argsort(x)
     x, y, yerr = x[inds], y[inds], yerr[inds]
-    ivar = 1. / yerr / yerr
+
+    # Compute the weights.
+    ivar = 1. / yerr_masked / yerr_masked
     w = np.array(ivar)
 
     # Build the list of knot locations.
@@ -145,21 +151,18 @@ def fit_trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
         s0 = None
         for i in range(maxiter):
             # Fit the spline.
-            extra_t = np.append(t, [x[0], x[-1]])
-            x0 = np.append(x, extra_t)
+            extra_t = t  # np.append(t, [x[0], x[-1]])
+            x0 = np.append(x_masked, extra_t)
             inds = np.argsort(x0)
-            y0 = np.append(y, np.ones_like(extra_t))[inds]
+            y0 = np.append(y_masked, np.ones_like(extra_t))[inds]
             w0 = np.append(w, np.ones_like(extra_t))[inds]
             x0 = x0[inds]
-
-            # Check Schoenberg-Whitney condition.
-            # good = t[3 + 1:-3] - t[3:-3 - 1] > 0
 
             # Fit the spline.
             p = LSQUnivariateSpline(x0, y0, t, k=3, w=w0)
 
             # Compute chi_i ^2.
-            chi = (y - p(x)) / yerr
+            chi = (y_masked - p(x)) / yerr_masked
             chi2 = chi * chi
 
             # Check for convergence.
@@ -174,12 +177,13 @@ def fit_trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
             w = ivar * Q / (chi2 + Q)
 
         # Find any discontinuities.
-        i = _untrendy.discontinuities(x, chi, dt, Q, 0.1)
+        i = _untrendy.discontinuities(x_masked[1:-2], chi[1:-2], dt, Q, 0.1)
         if i < 0:
             return p
 
-        logging.info("Discontinuity found at t={0}".format(x[i]))
-        t = _add_knots(t, x[i], x[i + 1], N=np.max([nfill, 4]))
+        logging.info("Discontinuity found at t={0}".format(x_masked[i + 1]))
+        t = _add_knots(t, x_masked[i + 1], x_masked[i + 2],
+                       N=np.max([nfill, 4]))
 
     return p
 
