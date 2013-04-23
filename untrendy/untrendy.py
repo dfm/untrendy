@@ -71,7 +71,7 @@ def untrend(x, y, yerr=None, **kwargs):
     return y, yerr
 
 
-def fit_trend(x, y, yerr=None, Q=12, dt=4., tol=1.25e-3, maxiter=15,
+def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
               fill_times=None, maxditer=4, nfill=4):
     """
     Use iteratively re-weighted least squares to fit a spline to the
