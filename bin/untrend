@@ -48,7 +48,7 @@ if __name__ == "__main__":
         sys.exit(2)
 
     # De-trend the data.
-    f, ferr = untrendy.detrend(t, f, ferr)
+    f, ferr = untrendy.untrend(t, f, ferr)
 
     # Output the results.
     print(title_fmt.format("time", "flux", "flux_err"))

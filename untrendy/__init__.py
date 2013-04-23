@@ -5,4 +5,4 @@ from __future__ import absolute_import, unicode_literals
 
 __version__ = "0.0.1"
 
-from .untrendy import fit_trend, detrend, discontinuity_scalar, median
+from .untrendy import fit_trend, untrend, discontinuity_scalar, median

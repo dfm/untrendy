@@ -10,7 +10,7 @@ same algorithm might be useful for other datasets.
 from __future__ import (division, print_function, absolute_import,
                         unicode_literals)
 
-__all__ = ["detrend", "fit_trend", "discontinuity_scalar", "median"]
+__all__ = ["untrend", "fit_trend", "discontinuity_scalar", "median"]
 
 import logging
 import numpy as np
@@ -24,7 +24,7 @@ except ImportError:
 from . import _untrendy
 
 
-def detrend(x, y, yerr=None, **kwargs):
+def untrend(x, y, yerr=None, **kwargs):
     """
     Use iteratively re-weighted least squares to remove the out-of-transit
     trends in a light curve. Unlike ``fit_trend``, this function masks bad

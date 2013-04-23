@@ -33,7 +33,7 @@ measurements ``f`` and uncertainties ``sigma``. You can simply run:
 ::
 
     import untrendy
-    f_detrend, sigma_detrend = untrendy.detrend(t, f, sigma)
+    f_detrend, sigma_detrend = untrendy.untrend(t, f, sigma)
 
 to find a robust estimate of the global trends of the time series and remove
 it. The default settings are tuned to work well for finding the
