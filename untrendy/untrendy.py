@@ -120,6 +120,9 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
     y_masked = y_masked[delta > 0]
     yerr_masked = yerr_masked[delta > 0]
 
+    # Get the median flux.
+    mu = np.median(y_masked)
+
     # Compute the initial weights.
     ivar = 1. / yerr_masked / yerr_masked
     w = np.array(ivar)
@@ -144,8 +147,17 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
             if np.any(delta <= 0):
                 t = t[delta > 0]
 
+            # Add "data" at the positions of all the knots at the median of
+            # the fluxes. This should help keep the values reasonable even
+            # in time gaps.
+            x0 = np.append(x_masked, t)
+            inds = np.argsort(x0)
+            x0 = x0[inds]
+            y0 = np.append(y_masked, mu * np.ones_like(t))[inds]
+            w0 = np.append(w, np.ones_like(t))[inds]
+
             # Fit the spline.
-            p = LSQUnivariateSpline(x_masked, y_masked, t, k=3, w=w)
+            p = LSQUnivariateSpline(x0, y0, t, k=3, w=w0)
 
             # Compute chi_i ^2.
             chi = (y_masked - p(x_masked)) / yerr_masked
