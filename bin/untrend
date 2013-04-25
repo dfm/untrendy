@@ -1,14 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 """
-De-trend a Kepler light curve using the ￭ algorithm.
+Command Line Untrending
+-----------------------
 
-Usage: untrend /path/to/lightcurve.txt
-       cat /path/to/lightcurve.txt | untrend
+There is also the option of using **Untrendy** from the command line if you
+don't want to bother with all the Python stuff. If you have a whitespace
+separated ASCII file containing your light curve, you can de-trend it by
+running:
 
-The input data should have 2 or 3 whitespace separated columns with time in
-the first column, flux in the second and uncertainties in the third. If you
-need more control, use the Python bindings.
+::
+
+    untrend /path/to/data.txt
+
+The code will assume that your file has 2 or 3 columns with time, flux and
+(optionally) uncertainties for each observation. Then, the de-trended light
+curve will be written to standard out in the same format. Alternatively, the
+same program can read the data right from standard in:
+
+::
+
+    cat /path/to/data.txt | untrend
+
+This gives you the option of doing something crazy and then piping it all
+UNIX-like. Personally, I would just use Python.
 
 """
 

@@ -30,23 +30,18 @@ def untrend(x, y, yerr=None, **kwargs):
     trends in a light curve. Unlike ``fit_trend``, this function masks bad
     data (``NaN``) and normalizes the data before fitting.
 
-    :param x:
-        The sampled times.
+    **Parameters**
 
-    :param y:
-        The fluxes corresponding to the times in ``x``.
+    :``x``:          The sampled times.
+    :``y``:          The fluxes corresponding to the times in ``x``.
+    :``yerr``:       (optional) The 1-sigma error bars on ``y``.
+    :``**kwargs``:   (optional) Other arguments passed to the ``fit_trend``
+                     function.
 
-    :param yerr: (optional)
-        The 1-sigma error bars on ``y``.
+    **Returns**
 
-    :param **kwargs: (optional)
-        Other arguments passed to the ``fit_trend`` function.
-
-    :returns flux:
-        The de-trended relative fluxes.
-
-    :returns ferr:
-        The de-trended uncertainties on ``flux``.
+    :``flux``:       The de-trended relative fluxes.
+    :``ferr``:       The de-trended uncertainties on ``flux``.
 
     """
     if yerr is None:
@@ -79,37 +74,30 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
     In other words, bad data should be masked and it often helps to normalize
     the fluxes (by the median or something).
 
-    :param x:
-        The sampled times.
+    **Parameters**
 
-    :param y:
-        The fluxes corresponding to the times in ``x``.
+    :``x``:          The sampled times.
+    :``y``:          The fluxes corresponding to the times in ``x``.
+    :``yerr``:       (optional) The 1-sigma error bars on ``y``.
+    :``Q``:          (optional) The parameter controlling the severity of the
+                     re-weighting.
+    :``dt``:         (optional) The initial spacing between time control
+                     points.
+    :``tol``:        (optional) The convergence criterion.
+    :``maxiter``:    (optional) The maximum number of re-weighting iterations
+                     to run.
+    :``fill_times``: (optional) If provided, this number sets the minimum time
+                     spacing between adjacent samples that is acceptable. If
+                     the spacing is larger, knots will be added to fill in
+                     the gap.
+    :``maxditer``:   (optional) The maximum number of discontinuity search
+                     iterations to run.
+    :``nfill``:      (optional) The number of knots to use to fill in the
+                     gaps.
 
-    :param yerr: (optional)
-        The 1-sigma error bars on ``y``.
+    **Returns**
 
-    :param Q: (optional)
-        The parameter controlling the severity of the re-weighting.
-
-    :param dt: (optional)
-        The initial spacing between time control points.
-
-    :param tol: (optional)
-        The convergence criterion.
-
-    :param maxiter: (optional)
-        The maximum number of re-weighting iterations to run.
-
-    :param fill_times: (optional)
-        If provided, this number sets the minimum time spacing between
-        adjacent samples that is acceptable. If the spacing is larger,
-        knots will be added to fill in the gap.
-
-    :param maxditer: (optional)
-        The maximum number of discontinuity search iterations to run.
-
-    :param nfill: (optional)
-        The number of knots to use to fill in the gaps.
+    :``trend``:      A callable representation of the trend.
 
     """
     if LSQUnivariateSpline is None:
