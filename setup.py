@@ -40,7 +40,7 @@ setup(
     packages=["untrendy"],
     scripts=["bin/untrend"],
     package_data={"": ["README.rst", "LICENSE.rst"],
-                  "untrendy": ["test_data/*"]},
+                  "untrendy": ["untrendy.h", "test_data/*"]},
     include_package_data=True,
     ext_modules=[untrendy],
     classifiers=[
