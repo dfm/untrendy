@@ -5,26 +5,20 @@ import re
 import os
 import sys
 
-from numpy.distutils.core import setup, Extension
+from numpy.distutils.misc_util import get_numpy_include_dirs
 
+try:
+    from setuptools import setup, Extension
+except ImportError:
+    from distutils.core import setup, Extension
 
 if sys.argv[-1] == "publish":
     os.system("python setup.py sdist upload")
     sys.exit()
 
-# First, make sure that the f2py interfaces exist.
-interface_exists = os.path.exists("untrendy/untrendy.pyf")
-if "interface" in sys.argv or not interface_exists:
-    # Generate the Fortran signature/interface.
-    cmd = ("cd untrendy;f2py discontinuities.f90 -m _untrendy -h untrendy.pyf"
-           " --overwrite-signature")
-    os.system(cmd)
-    if "interface" in sys.argv:
-        sys.exit(0)
-
-# Define the Fortran extension.
-untrendy = Extension("untrendy._untrendy", ["untrendy/untrendy.pyf",
-                                            "untrendy/discontinuities.f90"])
+untrendy = Extension("untrendy._untrendy", ["untrendy/untrendy.c",
+                                            "untrendy/_untrendy.c"],
+                     include_dirs=["untrendy"] + get_numpy_include_dirs())
 
 # Get the version number.
 vre = re.compile("__version__ = \"(.*?)\"")
