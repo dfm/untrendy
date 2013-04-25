@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include "untrendy.h"
@@ -35,7 +36,7 @@ int find_discontinuities (int n, double *t, double *chi, double dt, double Q,
     double *softr = (double*)malloc(n * sizeof(double));
 
     for (i = 0; i < n; ++i)
-        softr[i] = sqrt(chi[i] * Q / (Q + chi[i] * chi[i]));
+        softr[i] = chi[i] * sqrt(Q / (Q + chi[i] * chi[i]));
 
     for (i = 0; i < n - 1; ++i) {
         tmid = 0.5 * (t[i] + t[i + 1]);

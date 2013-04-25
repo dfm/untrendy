@@ -175,7 +175,8 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
             w = ivar * Q / (chi2 + Q)
 
         # Find any discontinuities.
-        i = _untrendy.discontinuities(x_masked[1:-2], chi[1:-2], dt, Q, 0.1)
+        i = _untrendy.find_discontinuities(x_masked[1:-2], chi[1:-2],
+                                           dt, Q, 0.1)
         if i < 0:
             return p
 
