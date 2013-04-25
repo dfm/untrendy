@@ -63,7 +63,7 @@ Notes
 from __future__ import absolute_import, unicode_literals
 
 __all__ = ["fit_trend", "untrend", "discontinuity_scalar", "median"]
-__version__ = "0.0.1"
+__version__ = "0.0.2"
 __author__ = "Dan Foreman-Mackey (danfm@nyu.edu)"
 __copyright__ = "Copyright 2013 Daniel Foreman-Mackey"
 __contributors__ = []
