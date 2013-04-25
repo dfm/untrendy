@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+Automatically construct the README for untrendy by scraping the docstrings
+from the module.
+
+"""
 
 from __future__ import (division, print_function, absolute_import,
                         unicode_literals)

@@ -114,8 +114,11 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
     mask = ~(np.isnan(x) + np.isnan(y) + np.isnan(yerr))
     x_masked, y_masked, yerr_masked = x[mask], y[mask], yerr[mask]
 
-    # Compute the median flux.
-    mu = np.median(y_masked)
+    # Remove any points that aren't sequential.
+    delta = np.append(x_masked[1:] - x_masked[:-1], True)
+    x_masked = x_masked[delta > 0]
+    y_masked = y_masked[delta > 0]
+    yerr_masked = yerr_masked[delta > 0]
 
     # Compute the initial weights.
     ivar = 1. / yerr_masked / yerr_masked
@@ -132,6 +135,7 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
         for i in np.arange(len(x))[inds]:
             t = _add_knots(t, x[i], x[i + 1], N=2)
 
+    discontinuity = -1
     for j in range(maxditer):
         s0 = None
         for i in range(maxiter):
@@ -140,27 +144,11 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
             if np.any(delta <= 0):
                 t = t[delta > 0]
 
-            # Add "data" at the positions of all the knots at the median of
-            # the fluxes. This should help keep the values reasonable even
-            # in time gaps.
-            x0 = np.append(x_masked, t)
-            inds = np.argsort(x0)
-            x0 = x0[inds]
-            y0 = np.append(y_masked, mu * np.ones_like(t))[inds]
-            w0 = np.append(w, np.ones_like(t))[inds]
-
-            # Remove any "data points" that are at exactly the same points.
-            delta = x0[1:] - x0[:-1]
-            if np.any(delta <= 0):
-                x0 = x0[delta > 0]
-                y0 = y0[delta > 0]
-                w0 = w0[delta > 0]
-
             # Fit the spline.
-            p = LSQUnivariateSpline(x0, y0, t, k=3, w=w0)
+            p = LSQUnivariateSpline(x_masked, y_masked, t, k=3, w=w)
 
             # Compute chi_i ^2.
-            chi = (y_masked - p(x)) / yerr_masked
+            chi = (y_masked - p(x_masked)) / yerr_masked
             chi2 = chi * chi
 
             # Check for convergence.
@@ -176,9 +164,11 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
 
         # Find any discontinuities.
         i = _untrendy.find_discontinuities(x_masked[1:-2], chi[1:-2],
-                                           dt, Q, 0.1)
-        if i < 0:
+                                           0.5 * dt, Q, 2)
+        if i < 0 or discontinuity == x_masked[i + 1]:
             return p
+
+        discontinuity = x_masked[i + 1]
 
         logging.info("Discontinuity found at t={0}".format(x_masked[i + 1]))
         t = _add_knots(t, x_masked[i + 1], x_masked[i + 2],
