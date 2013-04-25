@@ -126,11 +126,10 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
     mask = ~(np.isnan(x) + np.isnan(y) + np.isnan(yerr))
     x_masked, y_masked, yerr_masked = x[mask], y[mask], yerr[mask]
 
-    # The time series needs to be in order.
-    inds = np.argsort(x)
-    x, y, yerr = x[inds], y[inds], yerr[inds]
+    # Compute the median flux.
+    mu = np.median(y_masked)
 
-    # Compute the weights.
+    # Compute the initial weights.
     ivar = 1. / yerr_masked / yerr_masked
     w = np.array(ivar)
 
@@ -143,18 +142,31 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
         inds = x[1:] - x[:-1] > fill_times
         logging.info("Filling in {0} time gaps.".format(np.sum(inds)))
         for i in np.arange(len(x))[inds]:
-            t = _add_knots(t, x[i], x[i + 1], N=2)  # nfill)
+            t = _add_knots(t, x[i], x[i + 1], N=2)
 
     for j in range(maxditer):
         s0 = None
         for i in range(maxiter):
-            # Fit the spline.
-            extra_t = t  # np.append(t, [x[0], x[-1]])
-            x0 = np.append(x_masked, extra_t)
+            # Remove any knots that are at exactly the same point.
+            delta = t[1:] - t[:-1]
+            if np.any(delta <= 0):
+                t = t[delta > 0]
+
+            # Add "data" at the positions of all the knots at the median of
+            # the fluxes. This should help keep the values reasonable even
+            # in time gaps.
+            x0 = np.append(x_masked, t)
             inds = np.argsort(x0)
-            y0 = np.append(y_masked, np.ones_like(extra_t))[inds]
-            w0 = np.append(w, np.ones_like(extra_t))[inds]
             x0 = x0[inds]
+            y0 = np.append(y_masked, mu * np.ones_like(t))[inds]
+            w0 = np.append(w, np.ones_like(t))[inds]
+
+            # Remove any "data points" that are at exactly the same points.
+            delta = x0[1:] - x0[:-1]
+            if np.any(delta <= 0):
+                x0 = x0[delta > 0]
+                y0 = y0[delta > 0]
+                w0 = w0[delta > 0]
 
             # Fit the spline.
             p = LSQUnivariateSpline(x0, y0, t, k=3, w=w0)

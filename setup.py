@@ -5,7 +5,10 @@ import re
 import os
 import sys
 
-from numpy.distutils.misc_util import get_numpy_include_dirs
+try:
+    from numpy.distutils.misc_util import get_numpy_include_dirs
+except ImportError:
+    get_numpy_include_dirs = lambda: []
 
 try:
     from setuptools import setup, Extension
