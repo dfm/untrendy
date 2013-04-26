@@ -47,7 +47,8 @@ def untrend(x, y, yerr=None, **kwargs):
     if yerr is None:
         yerr = np.ones_like(y)
 
-    x, y, yerr = np.atleast_1d(x), np.atleast_1d(y), np.atleast_1d(yerr)
+    # Copy the arrays.
+    x, y, yerr = np.array(x), np.array(y), np.array(yerr)
 
     # Mask bad data.
     inds = ~(np.isnan(x) + np.isnan(y) + np.isnan(yerr))
@@ -63,6 +64,7 @@ def untrend(x, y, yerr=None, **kwargs):
     factor = mu * trend(x0)
     y[inds] /= factor
     yerr[inds] /= factor
+
     return y, yerr
 
 
@@ -108,7 +110,7 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
     if yerr is None:
         yerr = np.ones_like(y)
 
-    x, y, yerr = np.atleast_1d(x), np.atleast_1d(y), np.atleast_1d(yerr)
+    x, y, yerr = np.array(x), np.array(y), np.array(yerr)
 
     # Mask bad data.
     mask = ~(np.isnan(x) + np.isnan(y) + np.isnan(yerr))
