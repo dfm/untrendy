@@ -15,3 +15,5 @@ dist
 COMMIT
 *.egg-info
 *.svg
+*.o
+src/spline_test
