@@ -69,7 +69,7 @@ def untrend(x, y, yerr=None, **kwargs):
 
 
 def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
-              fill_times=None, maxditer=4, nfill=4):
+              fill_times=None, maxditer=4, nfill=4, width=1.5):
     """
     Use iteratively re-weighted least squares to fit a spline to the
     out-of-transit trends in a time series. The input data should be "clean".
@@ -96,6 +96,8 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
                      iterations to run.
     :``nfill``:      (optional) The number of knots to use to fill in the
                      gaps.
+    :``width``:      (optional) The width of the discontinuity filter in the
+                     same units as ``x``.
 
     **Returns**
 
@@ -178,7 +180,7 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
 
         # Find any discontinuities.
         i = _untrendy.find_discontinuities(x_masked[1:-2], chi[1:-2],
-                                           0.5 * dt, Q, 2)
+                                           width, Q, 2)
         if i < 0 or discontinuity == x_masked[i + 1]:
             return p
 
