@@ -19,13 +19,18 @@ def _load_kepler_lc(name):
         time, flux, ferr = (f[1].data["TIME"], f[1].data["SAP_FLUX"],
                             f[1].data["SAP_FLUX_ERR"])
 
-    return time, flux, ferr
+    return time, flux / np.median(flux), ferr / np.median(flux)
 
 
 def test_SW_condition():
     np.seterr(all="raise")
     time, flux, ferr = _load_kepler_lc("kplr010874614-2009131105131_llc.fits")
-    flux, ferr = untrend(time, flux, ferr, dt=3, Q=4, fill_times=10 ** -1.25)
+    flux, ferr = untrend(time, flux, ferr, fill_times=10 ** -1.25)
+
+
+def test_crazy_artifact():
+    time, flux, ferr = _load_kepler_lc("kplr009002278-2012179063303_llc.fits")
+    flux, ferr = untrend(time, flux, ferr, fill_times=10 ** -1.25)
 
 
 def test_fake_data():

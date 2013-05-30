@@ -44,28 +44,9 @@ def untrend(x, y, yerr=None, **kwargs):
     :``ferr``:       The de-trended uncertainties on ``flux``.
 
     """
-    if yerr is None:
-        yerr = np.ones_like(y)
-
-    # Copy the arrays.
-    x, y, yerr = np.array(x), np.array(y), np.array(yerr)
-
-    # Mask bad data.
-    inds = ~(np.isnan(x) + np.isnan(y) + np.isnan(yerr))
-    x0, y0 = x[inds], y[inds]
-
-    # Normalize the data.
-    mu = np.median(y0)
-
-    # Fit the trend.
-    trend = fit_trend(x0, y0 / mu, yerr=yerr[inds] / mu, **kwargs)
-
-    # De-trend the fluxes.
-    factor = mu * trend(x0)
-    y[inds] /= factor
-    yerr[inds] /= factor
-
-    return y, yerr
+    trend = fit_trend(x, y, yerr=yerr, **kwargs)
+    factor = trend(x)
+    return y / factor, yerr / factor
 
 
 def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
@@ -191,6 +172,7 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
 
             logging.info("Discontinuity found at t={0}"
                          .format(x_masked[i + 1]))
+            print(x_masked[i + 1], x_masked[i + 2])
             t = _add_knots(t, x_masked[i + 1], x_masked[i + 2],
                            N=np.max([nfill, 4]))
 
