@@ -41,8 +41,8 @@ static PyObject
         return NULL;
     }
 
-    double *t = (double*)PyArray_DATA(t_array);
-    double *chi = (double*)PyArray_DATA(chi_array);
+    double *t = (double*)PyArray_DATA(t_array),
+           *chi = (double*)PyArray_DATA(chi_array);
 
     int ind = find_discontinuities(n, t, chi, dt, Q, thresh);
 

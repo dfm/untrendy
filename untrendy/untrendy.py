@@ -69,7 +69,7 @@ def untrend(x, y, yerr=None, **kwargs):
 
 
 def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
-              fill_times=None, maxditer=4, nfill=4, width=1.5):
+              fill_times=None, maxditer=4, nfill=4, widths=[0.75, 1.5, 2.5]):
     """
     Use iteratively re-weighted least squares to fit a spline to the
     out-of-transit trends in a time series. The input data should be "clean".
@@ -142,7 +142,7 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
         for i in np.arange(len(x))[inds]:
             t = _add_knots(t, x[i], x[i + 1], N=2)
 
-    discontinuity = -1
+    discontinuities = []
     for j in range(maxditer):
         s0 = None
         for i in range(maxiter):
@@ -179,16 +179,24 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
             w = ivar * Q / (chi2 + Q)
 
         # Find any discontinuities.
-        i = _untrendy.find_discontinuities(x_masked[1:-2], chi[1:-2],
-                                           width, Q, 2)
-        if i < 0 or discontinuity == x_masked[i + 1]:
-            return p
+        count = 0
+        for width in widths:
+            i = _untrendy.find_discontinuities(x_masked[1:-2], chi[1:-2],
+                                               width, Q, 2)
+            if i < 0 or x_masked[i + 1] in discontinuities:
+                continue
 
-        discontinuity = x_masked[i + 1]
+            count += 1
+            discontinuities.append(x_masked[i + 1])
 
-        logging.info("Discontinuity found at t={0}".format(x_masked[i + 1]))
-        t = _add_knots(t, x_masked[i + 1], x_masked[i + 2],
-                       N=np.max([nfill, 4]))
+            logging.info("Discontinuity found at t={0}"
+                         .format(x_masked[i + 1]))
+            t = _add_knots(t, x_masked[i + 1], x_masked[i + 2],
+                           N=np.max([nfill, 4]))
+
+        # End if nothing is found.
+        if count == 0:
+            break
 
     return p
 
