@@ -172,7 +172,6 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
 
             logging.info("Discontinuity found at t={0}"
                          .format(x_masked[i + 1]))
-            print(x_masked[i + 1], x_masked[i + 2])
             t = _add_knots(t, x_masked[i + 1], x_masked[i + 2],
                            N=np.max([nfill, 4]))
 
