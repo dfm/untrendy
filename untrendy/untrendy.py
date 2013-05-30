@@ -48,7 +48,7 @@ def untrend(x, y, yerr=None, **kwargs):
     return y / factor, yerr / factor
 
 
-def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
+def fit_trend(x, y, yerr=None, Q=24, dt=3., tol=1.25e-3, maxiter=15,
               fill_times=None, maxditer=4, nfill=4,
               widths=[1.5, 2.25, 3.0]):
     """
@@ -121,7 +121,7 @@ def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
         inds = x[1:] - x[:-1] > fill_times
         logging.info("Filling in {0} time gaps.".format(np.sum(inds)))
         for i in np.arange(len(x))[inds]:
-            t = _add_knots(t, x[i], x[i + 1], N=2)
+            t = _add_knots(t, x[i], x[i + 1], N=np.max([nfill, 4]))
 
     discontinuities = []
     for j in range(maxditer):
