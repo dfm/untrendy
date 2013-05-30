@@ -27,8 +27,7 @@ from . import _untrendy
 def untrend(x, y, yerr=None, **kwargs):
     """
     Use iteratively re-weighted least squares to remove the out-of-transit
-    trends in a light curve. Unlike ``fit_trend``, this function masks bad
-    data (``NaN``) and normalizes the data before fitting.
+    trends in a light curve.
 
     **Parameters**
 
@@ -50,7 +49,8 @@ def untrend(x, y, yerr=None, **kwargs):
 
 
 def fit_trend(x, y, yerr=None, Q=12, dt=3., tol=1.25e-3, maxiter=15,
-              fill_times=None, maxditer=4, nfill=4, widths=[0.75, 1.5, 2.5]):
+              fill_times=None, maxditer=4, nfill=4,
+              widths=[0.75, 1.5, 2.25, 3.0]):
     """
     Use iteratively re-weighted least squares to fit a spline to the
     out-of-transit trends in a time series. The input data should be "clean".
