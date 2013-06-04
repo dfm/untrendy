@@ -137,19 +137,16 @@ def fit_trend(x, y, yerr=None, Q=24, dt=3., tol=1.25e-3, maxiter=15,
             w0 = np.append(w, np.ones_like(t))[inds]
 
             # Remove any knots that are at exactly the same point.
-            delta = x0[1:] - x0[:-1]
+            delta = t[1:] - t[:-1]
             if np.any(delta <= 0):
-                inds = delta > 0
-                x0 = x0[inds]
-                y0 = y0[inds]
-                w0 = w0[inds]
+                t = t[delta > 0]
 
             # Fit the spline.
             try:
                 p = LSQUnivariateSpline(x0, y0, t, k=3, w=w0)
             except ValueError:
                 print("Knot spacing:")
-                print(list(x0[1:] - x0[:-1]))
+                print(list(t[1:] - t[:-1]))
                 raise
 
             # Compute chi_i ^2.
