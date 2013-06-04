@@ -127,11 +127,6 @@ def fit_trend(x, y, yerr=None, Q=24, dt=3., tol=1.25e-3, maxiter=15,
     for j in range(maxditer):
         s0 = None
         for i in range(maxiter):
-            # Remove any knots that are at exactly the same point.
-            delta = t[1:] - t[:-1]
-            if np.any(delta <= 0):
-                t = t[delta > 0]
-
             # Add "data" at the positions of all the knots at the median of
             # the fluxes. This should help keep the values reasonable even
             # in time gaps.
@@ -140,6 +135,14 @@ def fit_trend(x, y, yerr=None, Q=24, dt=3., tol=1.25e-3, maxiter=15,
             x0 = x0[inds]
             y0 = np.append(y_masked, mu * np.ones_like(t))[inds]
             w0 = np.append(w, np.ones_like(t))[inds]
+
+            # Remove any knots that are at exactly the same point.
+            delta = x0[1:] - x0[:-1]
+            if np.any(delta <= 0):
+                inds = delta > 0
+                x0 = x0[inds]
+                y0 = y0[inds]
+                w0 = w0[inds]
 
             # Fit the spline.
             try:
@@ -193,7 +196,6 @@ def _add_knots(t, t1, t2, N=3):
     samples in that region.
 
     """
-    assert t2 > t1
     return np.sort(np.append(t[(t < t1) + (t > t2)], np.linspace(t1, t2, N)))
 
 
