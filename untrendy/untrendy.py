@@ -193,6 +193,7 @@ def _add_knots(t, t1, t2, N=3):
     samples in that region.
 
     """
+    assert t2 > t1
     return np.sort(np.append(t[(t < t1) + (t > t2)], np.linspace(t1, t2, N)))
 
 
