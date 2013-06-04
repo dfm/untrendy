@@ -142,7 +142,12 @@ def fit_trend(x, y, yerr=None, Q=24, dt=3., tol=1.25e-3, maxiter=15,
             w0 = np.append(w, np.ones_like(t))[inds]
 
             # Fit the spline.
-            p = LSQUnivariateSpline(x0, y0, t, k=3, w=w0)
+            try:
+                p = LSQUnivariateSpline(x0, y0, t, k=3, w=w0)
+            except ValueError:
+                print("Knot spacing:")
+                print(list(x0[1:] - x0[:-1]))
+                raise
 
             # Compute chi_i ^2.
             chi = (y_masked - p(x_masked)) / yerr_masked
