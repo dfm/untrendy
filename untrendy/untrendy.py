@@ -146,7 +146,8 @@ def fit_trend(x, y, yerr=None, Q=24, dt=3., tol=1.25e-3, maxiter=15,
                 p = LSQUnivariateSpline(x0, y0, t, k=3, w=w0)
             except ValueError:
                 print("Knot spacing:")
-                print(list(t[1:] - t[:-1]))
+                delta = t[1:] - t[:-1]
+                print(delta.min(), delta.max())
                 raise
 
             # Compute chi_i ^2.
