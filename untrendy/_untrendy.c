@@ -1,5 +1,3 @@
-#define NPY_NO_DEPRECATED_API NPY_1_7_API_VERSION
-
 #include <Python.h>
 #include <numpy/arrayobject.h>
 #include "untrendy.h"
@@ -24,8 +22,8 @@ static PyObject
     if (!PyArg_ParseTuple(args, "OOddd", &t_obj, &chi_obj, &dt, &Q, &thresh))
         return NULL;
 
-    PyArrayObject *t_array = (PyArrayObject*)PyArray_FROM_OTF(t_obj, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
-    PyArrayObject *chi_array = (PyArrayObject*)PyArray_FROM_OTF(chi_obj, NPY_DOUBLE, NPY_ARRAY_IN_ARRAY);
+    PyArrayObject *t_array = (PyArrayObject*)PyArray_FROM_OTF(t_obj, NPY_DOUBLE, NPY_IN_ARRAY);
+    PyArrayObject *chi_array = (PyArrayObject*)PyArray_FROM_OTF(chi_obj, NPY_DOUBLE, NPY_IN_ARRAY);
 
     if (t_array == NULL || chi_array == NULL) {
         Py_XDECREF(t_array);
